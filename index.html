@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DigitalCanvasMy - Mysterious Black & White</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: #000000; /* Hitam pekat */
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container untuk animas mata kucing */
+        .eyes-container {
+            position: absolute;
+            top: 35%; /* Letak mata kat atas sikit dari teks */
+            display: flex;
+            gap: 100px; /* Jarak antara mata kiri dan kanan */
+            z-index: 1;
+        }
+
+        .eye {
+            width: 140px;
+            height: 80px;
+            background-color: #ffffff; /* Mata putih */
+            border-radius: 50% / 100% 100% 0 0; /* Bentuk mata kucing */
+            transform: scaleY(1);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Animasi Berkelip ditukar kepada 2s */
+            animation: blink 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Anak Mata (Pupil) - Bentuk Slit Kucing */
+        .eye::after {
+            content: '';
+            width: 15px;
+            height: 70%;
+            background-color: #000000; /* Pupil hitam */
+            border-radius: 50%;
+        }
+
+        /* Keyframes untuk kelip mata disesuaikan untuk 2s */
+        @keyframes blink {
+            0%, 92%, 100% { transform: scaleY(1); }
+            96% { transform: scaleY(0.05); } /* Mata tertutup sikit masa kelip */
+        }
+
+        /* Content (Teks dan Butang) */
+        .main-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            margin-top: 150px; /* Jarak dari mata */
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .logo-top {
+            position: absolute;
+            top: -280px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .logo-top img {
+            height: 60px;
+            filter: grayscale(100%) brightness(1.5);
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: bold; /* Atas BOLD */
+            letter-spacing: -2px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(0,0,0,0.9);
+        }
+
+        p {
+            font-size: 1.8rem;
+            font-weight: normal;
+            font-style: italic; /* Senget (Italic) */
+            color: #cccccc;
+            margin-bottom: 40px;
+            display: inline-block;
+            /* Putaran sikit untuk nampak senget artistik */
+            transform: rotate(-3deg); 
+            text-shadow: 0 0 10px rgba(0,0,0,0.9);
+        }
+
+        /* Button Group */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .btn-signin {
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            background: transparent;
+        }
+
+        .btn-signin:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        .btn-signup {
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #ffffff;
+        }
+
+        .btn-signup:hover {
+            background: #cccccc;
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+        }
+
+        /* =========================================
+           MEDIA QUERIES UNTUK MOBILE RESPONSIVE
+           ========================================= */
+        @media (max-width: 768px) {
+            .eyes-container {
+                gap: 40px; /* Kurangkan jarak antara mata */
+                top: 25%;
+            }
+
+            .eye {
+                width: 90px; /* Kecilkan saiz mata */
+                height: 55px;
+            }
+
+            .eye::after {
+                width: 10px; /* Kecilkan pupil */
+            }
+
+            .main-content {
+                margin-top: 200px;
+            }
+
+            .logo-top {
+                top: -200px; /* Laraskan posisi logo */
+            }
+
+            h1 {
+                font-size: 3rem; /* Kecilkan saiz tajuk */
+            }
+
+            p {
+                font-size: 1.2rem; /* Kecilkan saiz subteks */
+                margin-bottom: 30px;
+            }
+
+            .button-group {
+                flex-direction: column; /* Susun butang ke bawah (menegak) */
+                gap: 15px;
+                padding: 0 20px;
+            }
+
+            .btn {
+                width: 100%; /* Jadikan butang penuh lebar pada skrin kecil */
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-top">
+        <img src="https://drive.google.com/uc?export=view&id=1yrX1qZ5CHJPZKnsYfGCT7ECJB52s6Esz" alt="Logo">
+    </div>
+
+    <div class="eyes-container">
+        <div class="eye"></div>
+        <div class="eye"></div>
+    </div>
+
+    <div class="main-content">
+        <h1>DigitalCanvasMy</h1>
+        <p>"Lukis guna empat kaki"</p>
+        
+        <div class="button-group">
+            <a href="login-page.html" class="btn btn-signin">Sign In</a>
+            <a href="register.html" class="btn btn-signup">Sign Up</a>
+        </div>
+    </div>
+
+</body>
+</html>

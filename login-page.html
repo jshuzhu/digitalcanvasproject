@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login • DigitalCanvasMy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+</head>
+<body class="bg-white text-black min-h-screen flex items-center justify-center p-4">
+
+  <div class="w-full max-w-sm animate-fade-in-up">
+    <div class="mb-10 text-center">
+      <img src="https://lh3.googleusercontent.com/d/1yrX1qZ5CHJPZKnsYfGCT7ECJB52s6Esz" alt="Logo" class="h-12 mx-auto mb-6">
+      <h1 class="text-2xl font-bold tracking-tight">Welcome Back</h1>
+      <p class="text-gray-500 text-sm mt-2">Sign in to your DigitalCanvasMy account</p>
+    </div>
+
+    <form onsubmit="loginUser(event)" class="space-y-5">
+      <input type="email" id="email" placeholder="Email" required class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-black transition-colors bg-transparent">
+      <input type="password" id="password" placeholder="Password" required class="w-full border-b border-gray-300 py-3 focus:outline-none focus:border-black transition-colors bg-transparent">
+      <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-all">Sign In</button>
+    </form>
+
+    <p class="text-center text-xs text-gray-400 mt-8 uppercase tracking-widest">
+      Don't have an account? <a href="/register" class="text-black font-bold border-b border-black">Sign Up</a>
+    </p>
+  </div>
+
+  <style>
+    @keyframes fadeInUp { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+  </style>
+
+  <script>
+    async function loginUser(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) alert(error.message);
+      else {
+        // Semakan Admin (Ganti dengan e-mel kau)
+        if (email === 'akmaladnan009@gmail.com') window.location.href = '/admin';
+        else window.location.href = '/shop';
+      }
+    }
+  </script>
+</body>
+</html>

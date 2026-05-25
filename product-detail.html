@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Product Details • DigitalCanvasMy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script src="nav.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'] },
+          colors: { black: '#111111', white: '#ffffff', gray: { 50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7' } },
+          animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards', 'slide-up': 'slideUp 0.3s ease-out forwards' },
+          keyframes: {
+            fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+            slideUp: { '0%': { opacity: '0', transform: 'translateY(100%)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-black antialiased font-sans selection:bg-black selection:text-white pb-20">
+
+  <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 transition-all duration-300">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="/shop" class="flex items-center gap-3 group">
+        <img src="https://lh3.googleusercontent.com/d/1yrX1qZ5CHJPZKnsYfGCT7ECJB52s6Esz" alt="DigitalCanvas Logo" class="h-8 md:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105">
+        <span class="text-xl font-bold tracking-tight hidden sm:block">DigitalCanvasMy</span>
+      </a>
+      <div class="flex items-center space-x-5 md:space-x-8 text-sm font-medium">
+        <a href="/shop" class="text-gray-500 hover:text-black transition-colors relative group">
+          <span>Shop</span><span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/orders" class="text-gray-500 hover:text-black transition-colors relative group">
+          <span>My Orders</span><span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all group-hover:w-full"></span>
+        </a>
+        <a href="/cart" class="text-gray-500 hover:text-black transition-colors flex items-center gap-1.5 group">
+          <span>Cart</span>
+          <span id="cart-count" class="bg-gray-100 text-black px-2 py-0.5 rounded-full text-xs font-bold transition-colors group-hover:bg-black group-hover:text-white">0</span>
+        </a>
+        
+        <div class="relative">
+          <button
+            id="nav-avatar-btn"
+            onclick="toggleProfileMenu(event)"
+            class="focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 rounded-full"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Open profile menu"
+          >
+            <img
+              id="nav-avatar"
+              src="https://drive.google.com/uc?export=view&id=1zW2AVaMEXwfeSppqKUr5ScEXmT8qf26A"
+              alt="Profile"
+              class="w-9 h-9 rounded-full border border-gray-200 object-cover cursor-pointer hover:border-black transition-colors"
+            >
+          </button>
+        
+          <div
+            id="profile-menu"
+            class="hidden absolute right-0 mt-3 w-48 bg-white border border-gray-100 shadow-xl py-2 z-50"
+            role="menu"
+          >
+            <a
+              href="/profile.html"
+              class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-colors"
+              role="menuitem"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Update Profile
+            </a>
+        
+            <hr class="my-1 border-gray-100">
+        
+            <button
+              onclick="signOut()"
+              class="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-600 hover:bg-gray-50 transition-colors"
+              role="menuitem"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div id="loading-state" class="max-w-5xl mx-auto p-8 text-center py-32">
+    <p class="text-gray-400 uppercase tracking-widest text-sm animate-pulse">Loading details...</p>
+  </div>
+
+  <main id="main-content" class="max-w-5xl mx-auto px-4 py-10 hidden opacity-0 animate-fade-in-up">
+
+    <a href="/shop" class="inline-flex items-center text-sm font-medium text-gray-400 hover:text-black transition-colors mb-10 group">
+      <span class="mr-2 transform transition-transform group-hover:-translate-x-1">←</span> Back to Shop
+    </a>
+
+    <div class="flex flex-col md:flex-row gap-10 md:gap-16 mb-20">
+      <div class="w-full md:w-1/2">
+        <div class="aspect-[4/5] bg-gray-50 relative overflow-hidden">
+          <img id="pd-image" src="" alt="Product Image" class="w-full h-full object-cover">
+        </div>
+      </div>
+      <div class="w-full md:w-1/2 flex flex-col justify-center">
+        <p id="pd-category" class="text-xs text-gray-400 uppercase tracking-widest mb-3"></p>
+        <h1 id="pd-name" class="text-3xl md:text-4xl font-bold tracking-tight mb-4"></h1>
+        <div class="flex items-center gap-4 mb-8">
+          <span id="pd-price" class="text-2xl font-medium"></span>
+          <span id="pd-stock-badge" class="px-3 py-1 bg-black text-white text-[10px] uppercase font-bold tracking-widest"></span>
+        </div>
+        <p id="pd-desc" class="text-gray-500 font-light leading-relaxed mb-10 whitespace-pre-line text-sm md:text-base"></p>
+        <div class="flex items-end gap-4 mt-auto">
+          <div class="w-24">
+            <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Quantity</label>
+            <input type="number" id="qty-input" value="1" min="1" class="w-full border-b border-gray-300 py-3 text-center text-lg focus:outline-none focus:border-black transition-colors bg-transparent">
+          </div>
+          <button id="btn-add-cart" class="flex-1 bg-black text-white py-4 font-bold uppercase tracking-widest text-sm transition-all hover:bg-gray-900 disabled:opacity-30 disabled:cursor-not-allowed">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100 pt-16 mb-10">
+      <h3 class="text-lg font-bold uppercase tracking-widest mb-10">Customer Reviews</h3>
+      <div id="reviews-container" class="space-y-10">
+        <p class="text-gray-400 font-light italic">No reviews yet for this piece.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast-container" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let currentProduct = null;
+    const productId = new URLSearchParams(window.location.search).get('id');
+
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'bg-black text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl animate-slide-up flex items-center gap-2';
+      toast.innerHTML = `<span>✓</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+    }
+
+    async function checkAuth() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { window.location.href = '/login'; return; }
+      updateCartCount();
+      if (!productId) { window.location.href = '/shop'; }
+      else { loadProductDetails(); }
+    }
+
+    async function loadProductDetails() {
+      const { data: product, error } = await supabase.from('products').select('*').eq('product_id', productId).single();
+      if (error || !product) { window.location.href = '/shop'; return; }
+
+      currentProduct = product;
+      const isOutOfStock = product.stock <= 0;
+
+      document.getElementById('pd-image').src = product.image_url || 'https://via.placeholder.com/600?text=No+Image';
+      document.getElementById('pd-category').innerText = product.category || 'General';
+      document.getElementById('pd-name').innerText = product.name;
+      document.getElementById('pd-price').innerText = `RM ${parseFloat(product.price).toFixed(2)}`;
+      document.getElementById('pd-desc').innerText = product.description || 'No description provided.';
+
+      const stockBadge = document.getElementById('pd-stock-badge');
+      if (isOutOfStock) {
+        stockBadge.className = 'px-3 py-1 bg-white text-black border border-black text-[10px] uppercase font-bold tracking-widest';
+        stockBadge.innerText = 'Out of Stock';
+      } else if (product.stock <= 5) {
+        stockBadge.innerText = `Only ${product.stock} left`;
+      } else {
+        stockBadge.innerText = 'In Stock';
+      }
+
+      const qtyInput = document.getElementById('qty-input');
+      const btnAddCart = document.getElementById('btn-add-cart');
+      if (isOutOfStock) {
+        qtyInput.disabled = true;
+        btnAddCart.disabled = true;
+        btnAddCart.innerText = 'Sold Out';
+      } else {
+        qtyInput.max = product.stock;
+        btnAddCart.onclick = handleAddToCart;
+      }
+
+      loadReviews();
+      document.getElementById('loading-state').classList.add('hidden');
+      document.getElementById('main-content').classList.remove('hidden');
+      setTimeout(() => document.getElementById('main-content').classList.remove('opacity-0'), 50);
+    }
+
+    async function loadReviews() {
+      const { data: reviews } = await supabase.from('reviews').select('*').eq('product_id', productId).order('created_at', { ascending: false });
+      const container = document.getElementById('reviews-container');
+      if (reviews && reviews.length > 0) {
+        container.innerHTML = reviews.map(r => {
+          const stars = '★'.repeat(r.rating) + `<span class="text-gray-200">${'★'.repeat(5 - r.rating)}</span>`;
+          const hiddenEmail = r.email.split('@')[0] + '@***.com';
+          return `
+            <div>
+              <div class="flex items-center gap-3 mb-2">
+                <div class="text-black text-lg tracking-widest">${stars}</div>
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">| ${hiddenEmail}</span>
+              </div>
+              <p class="text-gray-600 font-light leading-relaxed">${r.comment}</p>
+              <p class="text-[10px] text-gray-400 uppercase tracking-widest mt-3">${new Date(r.created_at).toLocaleDateString('en-GB')}</p>
+            </div>`;
+        }).join('');
+      }
+    }
+
+    function handleAddToCart() {
+      const inputQty = parseInt(document.getElementById('qty-input').value);
+      if (inputQty < 1 || isNaN(inputQty)) return;
+      const existing = cart.find(item => item.id === currentProduct.product_id);
+      const currentQtyInCart = existing ? existing.qty : 0;
+      if (currentQtyInCart + inputQty > currentProduct.stock) {
+        showToast('Cannot add more. Stock limit reached.');
+        return;
+      }
+      if (existing) { existing.qty += inputQty; }
+      else { cart.push({ id: currentProduct.product_id, name: currentProduct.name, price: currentProduct.price, qty: inputQty }); }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      const btn = document.getElementById('btn-add-cart');
+      btn.innerText = 'Added ✓';
+      btn.classList.add('bg-gray-800');
+      setTimeout(() => { btn.innerText = 'Add to Cart'; btn.classList.remove('bg-gray-800'); }, 1500);
+      showToast('Added to cart');
+    }
+
+    async function logout() { await supabase.auth.signOut(); window.location.href = '/login'; }
+
+    // SNIPPET BARU: Fungsi signOut()
+    async function signOut() {
+      await supabase.auth.signOut();
+      window.location.href = '/login';
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>

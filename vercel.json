@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    { "source": "/shop", "destination": "/shop.html" },
+    { "source": "/cart", "destination": "/cart.html" },
+    { "source": "/checkout", "destination": "/checkout.html" },
+    { "source": "/success", "destination": "/success.html" },
+    { "source": "/login", "destination": "/login-page.html" },
+    { "source": "/register", "destination": "/register.html" },
+    { "source": "/admin", "destination": "/admin-dashboard.html" },
+    { "source": "/orders", "destination": "/orders.html" },
+    { "source": "/product", "destination": "/product-detail.html" }
+  ],
+  "cleanUrls": true
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Profile • DigitalCanvasMy</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script src="nav.js" defer></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Poppins', 'sans-serif'] },
+          animation: { 'slide-up': 'slideUp 0.3s ease-out forwards' },
+          keyframes: { slideUp: { '0%': { opacity: '0', transform: 'translateY(100%)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-black antialiased font-sans pb-20">
+
+  <nav class="border-b border-gray-100">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="shop.html" class="flex items-center gap-3 group">
+        <img src="https://lh3.googleusercontent.com/d/1yrX1qZ5CHJPZKnsYfGCT7ECJB52s6Esz" alt="DigitalCanvas Logo" class="h-8 md:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105">
+        <span class="text-xl font-bold tracking-tight hidden sm:block">DigitalCanvasMy</span>
+      </a>
+      <div class="flex items-center gap-6 text-sm font-medium">
+        <a href="shop.html" class="text-gray-500 hover:text-black transition-colors">Back to Shop</a>
+        
+        <div class="relative">
+          <button
+            id="nav-avatar-btn"
+            onclick="toggleProfileMenu(event)"
+            class="focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 rounded-full"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-label="Open profile menu"
+          >
+            <img
+              id="nav-avatar"
+              src="https://drive.google.com/uc?export=view&id=1olD73UDFPOnVlJZiov4HOqhygorqmN7u"
+              alt="Profile"
+              class="w-9 h-9 rounded-full border border-gray-200 object-cover cursor-pointer hover:border-black transition-colors"
+            >
+          </button>
+        
+          <div
+            id="profile-menu"
+            class="hidden absolute right-0 mt-3 w-48 bg-white border border-gray-100 shadow-xl py-2 z-50"
+            role="menu"
+          >
+            <a
+              href="profile.html"
+              class="flex items-center gap-2 px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-black hover:bg-gray-50 transition-colors"
+              role="menuitem"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              Update Profile
+            </a>
+        
+            <hr class="my-1 border-gray-100">
+        
+            <button
+              onclick="signOut()"
+              class="flex items-center gap-2 w-full text-left px-4 py-2.5 text-xs font-bold uppercase tracking-widest text-red-400 hover:text-red-600 hover:bg-gray-50 transition-colors"
+              role="menuitem"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-xl mx-auto px-4 mt-12">
+    <h1 class="text-2xl font-bold mb-8 tracking-tight">My Profile</h1>
+
+    <form id="profile-form" onsubmit="updateProfile(event)" class="space-y-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="full-name" placeholder="Full Name" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+        <input type="tel" id="phone" placeholder="Phone Number" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+      </div>
+
+      <input type="text" id="addr-1" placeholder="Address Line 1" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+      <input type="text" id="addr-2" placeholder="Address Line 2 (Optional)" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+
+      <div class="grid grid-cols-2 gap-4">
+        <input type="text" id="city" placeholder="City" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+        <input type="text" id="postcode" placeholder="Postcode" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none transition-colors bg-transparent">
+      </div>
+
+      <select id="state" class="w-full border-b border-gray-300 py-3 focus:border-black outline-none bg-transparent">
+        <option value="">Select State</option>
+        <option value="Johor">Johor</option>
+        <option value="Kedah">Kedah</option>
+        <option value="Kelantan">Kelantan</option>
+        <option value="Melaka">Melaka</option>
+        <option value="Negeri Sembilan">Negeri Sembilan</option>
+        <option value="Pahang">Pahang</option>
+        <option value="Perak">Perak</option>
+        <option value="Perlis">Perlis</option>
+        <option value="Pulau Pinang">Pulau Pinang</option>
+        <option value="Sabah">Sabah</option>
+        <option value="Sarawak">Sarawak</option>
+        <option value="Selangor">Selangor</option>
+        <option value="Terengganu">Terengganu</option>
+        <option value="W.P. Kuala Lumpur">W.P. Kuala Lumpur</option>
+        <option value="W.P. Labuan">W.P. Labuan</option>
+        <option value="W.P. Putrajaya">W.P. Putrajaya</option>
+      </select>
+
+      <button type="submit" class="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-all">Save Profile</button>
+    </form>
+  </main>
+
+  <div id="toast-container" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    function showToast(message, isError = false) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `${isError ? 'bg-red-600' : 'bg-black'} text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl animate-slide-up flex items-center gap-2`;
+      toast.innerHTML = `<span>${isError ? '✗' : '✓'}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+    }
+
+    async function checkAuth() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) { window.location.href = 'login-page.html'; return; }
+
+  // Tarik data profil
+  let { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('user_id', user.id);
+
+  if (error) {
+    console.error("Error Detail:", error);
+    return;
+  }
+
+  // Isi data ke dalam input field
+  if (profiles && profiles.length > 0) {
+    const profile = profiles[0];
+    document.getElementById('full-name').value = profile.full_name || '';
+    document.getElementById('phone').value = profile.phone || '';
+    document.getElementById('addr-1').value = profile.address_line1 || '';
+    document.getElementById('addr-2').value = profile.address_line2 || '';
+    document.getElementById('city').value = profile.city || '';
+    document.getElementById('postcode').value = profile.postcode || '';
+    document.getElementById('state').value = profile.state || '';
+  } else {
+    console.log("Profil belum wujud, user boleh mula mengisi maklumat.");
+  }
+}
+    async function updateProfile(e) {
+      e.preventDefault();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const updates = {
+        full_name: document.getElementById('full-name').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address_line1: document.getElementById('addr-1').value.trim(),
+        address_line2: document.getElementById('addr-2').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        postcode: document.getElementById('postcode').value.trim(),
+        state: document.getElementById('state').value,
+        updated_at: new Date().toISOString()
+      };
+      
+      const { error } = await supabase.from('profiles').update(updates).eq('user_id', user.id);
+      if (error) { showToast('Update failed: ' + error.message, true); }
+      else { showToast('Profile saved successfully!'); }
+    }
+
+    async function logout() { await supabase.auth.signOut(); window.location.href = 'login-page.html'; }
+
+    async function signOut() {
+      await supabase.auth.signOut();
+      window.location.href = 'login-page.html';
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>
